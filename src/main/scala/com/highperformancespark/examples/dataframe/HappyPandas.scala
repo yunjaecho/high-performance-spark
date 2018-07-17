@@ -34,6 +34,7 @@ object HappyPandas {
     hiveContext
   }
 
+
   def loadDataSimple(sc: SparkContext, session: SparkSession, path: String): DataFrame = {
     val df1 = session.read.json(path)
 
