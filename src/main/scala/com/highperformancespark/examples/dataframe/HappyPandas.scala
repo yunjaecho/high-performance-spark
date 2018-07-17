@@ -20,6 +20,12 @@ object HappyPandas {
     session
   }
 
+  def sqlContext(sc: SparkContext): SQLContext = {
+    val sqlContext = new SQLContext(sc)
+    import sqlContext.implicits._
+    sqlContext
+  }
+
   def hiveContext(sc: SparkContext): HiveContext = {
     val hiveContext = new HiveContext(sc)
 
@@ -28,6 +34,22 @@ object HappyPandas {
     hiveContext
   }
 
+  def loadDataSimple(sc: SparkContext, session: SparkSession, path: String): DataFrame = {
+    val df1 = session.read.json(path)
 
+    val df2 = session.read.format("json")
+      .option("samplingRatio", "1.0")
+      .load(path)
+
+    val jsonRDD = sc.textFile(path)
+
+    val df3 = session.read.json(jsonRDD)
+
+    df1
+  }
+
+  def main(args: Array[String]): Unit = {
+
+  }
 
 }
