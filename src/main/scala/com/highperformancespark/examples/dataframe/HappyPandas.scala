@@ -3,6 +3,7 @@ package com.highperformancespark.examples.dataframe
 import java.util.Properties
 
 import org.apache.spark.SparkContext
+import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.{DataFrame, Dataset, Row, SparkSession}
 import org.apache.spark.sql.catalyst.expressions.aggregate._
 import org.apache.spark.sql.expressions._
@@ -182,6 +183,10 @@ object HappyPandas {
     readDatabaseTable(session)
   }
 
+
+  def writeParquest(df: DataFrame, path: String) = {
+    df.write.parquet(path)
+  }
 
 
 }

@@ -2,7 +2,7 @@ package com.highperformancespark.examples.dataframe
 
 import com.highperformancespark.examples.dataframe.HappyPandas.{Dept, PandaInfo, Pandas}
 import com.highperformancespark.examples.dataframe.MainApp.sc
-import org.apache.spark.sql.{Row, SparkSession}
+import org.apache.spark.sql.{DataFrame, Row, SparkSession}
 import org.apache.spark.sql.types.StructField
 import org.apache.spark.{SparkConf, SparkContext}
 
@@ -47,7 +47,15 @@ object MainApp extends App {
   //testJsonReader
   //testReadDatabaseTable
 
-  testWriteDatabaseTable
+  //testWriteDatabaseTable
+
+  //testWriteParquet
+
+  //testCreateFromCaseClassRDD
+
+  //testToRDD
+
+  testCollectDF
 
   /**
     * 중복되는 판다 ID들 삭제
@@ -134,6 +142,39 @@ object MainApp extends App {
 
     val df = sparkSession.createDataFrame(depts)
     HappyPandas.writeDatabaseTable(df, sparkSession).show()
+  }
+
+  def testWriteParquet() = {
+    val depts = List(
+      Dept(50, "ACCOUNTING", "NEW YORK"),
+      Dept(60, "RESEARCH", "DALLAS"),
+      Dept(70, "SALES", "CHICAGO"),
+      Dept(80, "OPERATIONS", "BOSTON")
+    )
+
+    val df = sparkSession.createDataFrame(depts)
+    HappyPandas.writeParquest(df, "data.parquet")
+  }
+
+  def testCreateFromCaseClassRDD() = {
+    val damao = RawPanda(1, "M1B 5K7", "giant", true, Array(0.1, 1.1))
+    val pandaPlace = PandaPlace("toronto", Array(damao))
+    val rdd = sc.makeRDD(Seq(pandaPlace))
+    LoadSave(sc, sparkSession).createFromCaseClassRDD(rdd)
+  }
+
+  def testToRDD() = {
+    val pandas = LoadSave(sc, sparkSession).createRawPandaDataFrame(rawPandaList)
+    LoadSave(sc, sparkSession).toRDD(pandas)
+  }
+
+  def testCollectDF() = {
+    val pandas = LoadSave(sc, sparkSession).createRawPandaDataFrame(rawPandaList)
+    val collectData = LoadSave(sc, sparkSession).collectDF(pandas)
+
+    for (data <- collectData) {
+      println(data)
+    }
   }
 
 

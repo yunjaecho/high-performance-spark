@@ -8,7 +8,9 @@ scalaVersion := "2.11.12"
 
 //autoScalaLibrary := false
 
-unmanagedClasspath in (Compile, runMain) += baseDirectory.value / "resources"
+//unmanagedClasspath in (Compile, runMain) += baseDirectory.value / "resources"
+
+resourceDirectory in Compile := baseDirectory.value /"src/main/resources"
 
 libraryDependencies += "org.apache.spark" %% "spark-core" % "2.3.1"
 libraryDependencies += "org.apache.spark" %% "spark-sql" % "2.3.1"

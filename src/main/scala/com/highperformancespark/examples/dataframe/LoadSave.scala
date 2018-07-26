@@ -30,6 +30,13 @@ case class LoadSave(sc: SparkContext, session: SparkSession) {
       StructField("pandas", pandasType)))
 
     val df3 = session.createDataFrame(rowRDD, schema)
+
+    println(" ==== df1 ====")
+    df1.show()
+    println(" ==== df2 ====")
+    df2.show()
+    println(" ==== df3 ====")
+    df3.show()
   }
 
 
@@ -43,5 +50,17 @@ case class LoadSave(sc: SparkContext, session: SparkSession) {
 
   def createRawPandaDataFrame(rawPandas: List[RawPanda]): DataFrame = {
     session.createDataFrame(rawPandas)
+  }
+
+  def toRDD(input: DataFrame): RDD[RawPanda] = {
+    val rdd: RDD[Row] = input.rdd
+    rdd.map(row => RawPanda(row.getAs[Long](0), row.getAs[String](1),
+      row.getAs[String](2), row.getAs[Boolean](3), row.getAs[Array[Double]](4)
+    ))
+  }
+
+  def collectDF(df: DataFrame) = {
+    val result: Array[Row] = df.collect()
+    result
   }
 }
